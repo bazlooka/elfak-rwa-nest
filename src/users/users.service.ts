@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
-import { Role } from '../auth/enums/role.enum';
+import { Role } from './enums/role.enum';
 
-import { User } from './models/user.interface';
+import { IUser } from './models/user.interface';
 
 @Injectable()
 export class UsersService {
-  private readonly users: User[] = [
+  private readonly users: IUser[] = [
     {
       id: 1,
       username: 'john',
@@ -20,11 +20,11 @@ export class UsersService {
     },
   ];
 
-  async findOne(username: string): Promise<User | undefined> {
+  async findOne(username: string): Promise<IUser | undefined> {
     return this.users.find((user) => user.username === username);
   }
 
-  async findById(userId: number): Promise<User | undefined> {
+  async findById(userId: number): Promise<IUser | undefined> {
     return this.users.find((user) => user.id === userId);
   }
 }

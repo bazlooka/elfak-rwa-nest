@@ -1,9 +1,7 @@
 import { Controller, Get, Post, Request, UseGuards } from '@nestjs/common';
 import { AppService } from './app.service';
 import { AuthService } from './auth/auth.service';
-import { Public } from './auth/decorators/public.decorator';
-import { Roles } from './auth/decorators/roles.decorator';
-import { Role } from './auth/enums/role.enum';
+import { Public } from './auth/decorators/public-endpoint.decorator';
 import { LocalAuthGuard } from './auth/guards/local-auth.guard';
 
 @Controller()
@@ -26,14 +24,20 @@ export class AppController {
     return this.authService.login(req.user);
   }
 
-  @Get('user/profile')
-  getProfile(@Request() req) {
-    return req.user;
+  @Public()
+  @Post('user/register')
+  async register(@Request() req) {
+    return this.authService.login(req.user);
   }
 
-  @Roles(Role.Admin)
-  @Get('user/profile2')
-  getProfileBanned(@Request() req) {
-    return req.user;
-  }
+  // @Get('user/profile')
+  // getProfile(@Request() req) {
+  //   return req.user;
+  // }
+
+  // @Roles(Role.Admin)
+  // @Get('user/profile2')
+  // getProfileBanned(@Request() req) {
+  //   return req.user;
+  // }
 }
