@@ -1,27 +1,40 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  OneToMany,
+  ManyToMany,
+} from 'typeorm';
+import { Grade } from '../../locations/models/grade.model';
 import { Role } from '../enums/role.enum';
-import { IUser } from './user.interface';
+import { Event } from '../../events/models/event.model';
 
 @Entity()
-export class User implements IUser {
+export class User {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column('varchar', { length: 32 })
   username: string;
 
-  @Column()
+  @Column('varchar', { length: 32 })
   firstName: string;
 
-  @Column()
+  @Column('varchar', { length: 32 })
   lastName: string;
 
-  @Column()
+  @Column('varchar', { length: 256 })
   password: string;
 
   @Column({ default: true })
   isActive: boolean;
 
-  @Column('simple-array')
+  @Column('simple-array', { default: [Role.Viewer] })
   roles: Role[];
+
+  @OneToMany(() => Grade, (grade) => grade.gradedBy)
+  grades: Grade;
+
+  @ManyToMany(() => Event, (event) => event.likedBy)
+  likedEvents: Event;
 }
