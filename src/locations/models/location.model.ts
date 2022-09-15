@@ -6,7 +6,7 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { Grade } from './grade.model';
+import { Grade } from '../grades/models/grade.model';
 import { LocationType } from './location-type.model';
 
 @Entity()

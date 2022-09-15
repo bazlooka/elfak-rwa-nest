@@ -5,7 +5,7 @@ import {
   OneToMany,
   ManyToMany,
 } from 'typeorm';
-import { Grade } from '../../locations/models/grade.model';
+import { Grade } from '../../locations/grades/models/grade.model';
 import { Role } from '../enums/role.enum';
 import { Event } from '../../events/models/event.model';
 

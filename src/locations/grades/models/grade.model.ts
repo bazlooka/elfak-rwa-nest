@@ -1,6 +1,6 @@
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
-import { User } from '../../users/models/user.model';
-import { Location } from './location.model';
+import { User } from '../../../users/models/user.model';
+import { Location } from '../../models/location.model';
 
 @Entity()
 export class Grade {
