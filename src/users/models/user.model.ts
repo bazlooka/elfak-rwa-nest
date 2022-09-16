@@ -4,6 +4,7 @@ import {
   PrimaryGeneratedColumn,
   OneToMany,
   ManyToMany,
+  DeleteDateColumn,
 } from 'typeorm';
 import { Grade } from '../../locations/grades/models/grade.model';
 import { Role } from '../enums/role.enum';
@@ -14,7 +15,7 @@ export class User {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column('varchar', { length: 32 })
+  @Column('varchar', { length: 32, unique: true })
   username: string;
 
   @Column('varchar', { length: 32 })
@@ -26,11 +27,11 @@ export class User {
   @Column('varchar', { length: 256 })
   password: string;
 
-  @Column({ default: true })
-  isActive: boolean;
-
   @Column('simple-array', { default: [Role.Viewer] })
   roles: Role[];
+
+  @DeleteDateColumn()
+  deletedDate: Date;
 
   @OneToMany(() => Grade, (grade) => grade.gradedBy)
   grades: Grade;

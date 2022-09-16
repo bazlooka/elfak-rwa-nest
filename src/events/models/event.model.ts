@@ -1,6 +1,7 @@
 import {
   Column,
   CreateDateColumn,
+  DeleteDateColumn,
   Entity,
   ManyToMany,
   ManyToOne,
@@ -31,6 +32,9 @@ export class Event {
 
   @Column('varchar', { length: 128 })
   imagePath: string;
+
+  @DeleteDateColumn()
+  deletedDate: Date;
 
   @ManyToOne(() => EventType, (eventType) => eventType.events)
   type: EventType;

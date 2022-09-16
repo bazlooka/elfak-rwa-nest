@@ -1,4 +1,10 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  DeleteDateColumn,
+  Entity,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { User } from '../../../users/models/user.model';
 import { Location } from '../../models/location.model';
 
@@ -12,6 +18,9 @@ export class Grade {
 
   @Column('varchar', { length: 256 })
   comment: string;
+
+  @DeleteDateColumn()
+  deletedDate: Date;
 
   @ManyToOne(() => Location, (location) => location.grades)
   location: Location;

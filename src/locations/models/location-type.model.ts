@@ -1,4 +1,10 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  DeleteDateColumn,
+  Entity,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { Location } from './location.model';
 
 @Entity()
@@ -11,6 +17,9 @@ export class LocationType {
 
   @Column('varchar', { length: 128 })
   markerPath: string;
+
+  @DeleteDateColumn()
+  deletedDate: Date;
 
   @ManyToOne(() => Location, (location) => location.type)
   locations: Location[];

@@ -1,4 +1,10 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  DeleteDateColumn,
+  Entity,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { Event } from './event.model';
 
 @Entity()
@@ -11,6 +17,9 @@ export class EventType {
 
   @Column('varchar', { length: 16 })
   color: string;
+
+  @DeleteDateColumn()
+  deletedDate: Date;
 
   @ManyToOne(() => Event, (event) => event.type)
   events: Event[];

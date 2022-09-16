@@ -15,9 +15,9 @@ import { EventsModule } from './events/events.module';
 @Module({
   imports: [
     TypeOrmModule.forRootAsync(typeOrmConfig),
+    ConfigModule.forRoot(),
     AuthModule,
     UsersModule,
-    ConfigModule.forRoot(),
     LocationsModule,
     EventsModule,
   ],

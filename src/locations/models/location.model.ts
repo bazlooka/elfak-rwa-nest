@@ -1,6 +1,7 @@
 import {
   Column,
   CreateDateColumn,
+  DeleteDateColumn,
   Entity,
   ManyToOne,
   OneToMany,
@@ -25,6 +26,9 @@ export class Location {
 
   @CreateDateColumn()
   publicationTime: Date;
+
+  @DeleteDateColumn()
+  deletedDate: Date;
 
   @ManyToOne(() => LocationType, (locationType) => locationType.locations)
   type: LocationType;
