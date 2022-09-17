@@ -1,9 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Role } from './enums/role.enum';
 import { UserCreateDto } from './models/user.create.dto';
 import { User } from './models/user.model';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UsersService {
@@ -13,23 +13,35 @@ export class UsersService {
   ) {}
 
   async register(createUserDto: UserCreateDto): Promise<User> {
-    // if (
-    //   this.userRepository.findOneBy({ username: createUserDto.username }) !==
-    //   null
-    // ) {
-    //   throw new Error('Username is already taken');
-    // }
-    const user = this.userRepository.create(createUserDto);
-    return await this.userRepository.save(user);
+    if (
+      (await this.userRepository.findOneBy({
+        username: createUserDto.username,
+      })) !== null
+    ) {
+      throw new HttpException(
+        'Username is already taken',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    const salt = await bcrypt.genSalt();
+    const hashedPassword = await bcrypt.hash(createUserDto.password, salt);
+
+    const user = this.userRepository.create({
+      ...createUserDto,
+      password: hashedPassword,
+    });
+
+    const userInDb = await this.userRepository.save(user);
+    userInDb.password = undefined; //Todo proper masking
+    return userInDb;
   }
 
-  async findOne(username: string): Promise<User | undefined> {
-    //return this.users.find((user) => user.username === username);
-    return undefined;
+  async getByUsername(username: string) {
+    return await this.userRepository.findOneBy({ username });
   }
 
-  async findById(userId: number): Promise<User | undefined> {
-    //return this.users.find((user) => user.id === userId);
-    return undefined;
+  async getById(id: number) {
+    return await this.userRepository.findOneBy({ id });
   }
 }

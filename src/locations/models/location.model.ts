@@ -7,6 +7,7 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { User } from '../../users/models/user.model';
 import { Grade } from '../grades/models/grade.model';
 import { LocationType } from './location-type.model';
 
@@ -27,6 +28,12 @@ export class Location {
   @CreateDateColumn()
   publicationTime: Date;
 
+  @Column()
+  latitude: number;
+
+  @Column()
+  longitude: number;
+
   @DeleteDateColumn()
   deletedDate: Date;
 
@@ -35,4 +42,7 @@ export class Location {
 
   @OneToMany(() => Grade, (grade) => grade.location)
   grades: Grade[];
+
+  @ManyToOne(() => User, (user) => user.publishedLocations)
+  author: User;
 }

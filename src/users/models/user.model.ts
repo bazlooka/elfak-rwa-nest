@@ -9,6 +9,7 @@ import {
 import { Grade } from '../../locations/grades/models/grade.model';
 import { Role } from '../enums/role.enum';
 import { Event } from '../../events/models/event.model';
+import { Location } from '../../locations/models/location.model';
 
 @Entity()
 export class User {
@@ -38,4 +39,7 @@ export class User {
 
   @ManyToMany(() => Event, (event) => event.likedBy)
   likedEvents: Event;
+
+  @OneToMany(() => Location, (location) => location.author)
+  publishedLocations: Location[];
 }

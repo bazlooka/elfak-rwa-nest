@@ -11,11 +11,19 @@ import { RolesGuard } from './auth/guards/roles.guard';
 import { UsersModule } from './users/users.module';
 import { LocationsModule } from './locations/locations.module';
 import { EventsModule } from './events/events.module';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
+import { MulterModule } from '@nestjs/platform-express';
 
 @Module({
   imports: [
     TypeOrmModule.forRootAsync(typeOrmConfig),
     ConfigModule.forRoot(),
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'public'),
+      renderPath: '/',
+    }),
+    MulterModule.register(),
     AuthModule,
     UsersModule,
     LocationsModule,
