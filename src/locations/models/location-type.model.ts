@@ -2,7 +2,7 @@ import {
   Column,
   DeleteDateColumn,
   Entity,
-  ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Location } from './location.model';
@@ -21,6 +21,6 @@ export class LocationType {
   @DeleteDateColumn()
   deletedDate: Date;
 
-  @ManyToOne(() => Location, (location) => location.type)
+  @OneToMany(() => Location, (location) => location.type)
   locations: Location[];
 }

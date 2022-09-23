@@ -5,6 +5,8 @@ import {
   OneToMany,
   ManyToMany,
   DeleteDateColumn,
+  BeforeInsert,
+  BeforeUpdate,
 } from 'typeorm';
 import { Grade } from '../../locations/grades/models/grade.model';
 import { Role } from '../enums/role.enum';
@@ -42,4 +44,10 @@ export class User {
 
   @OneToMany(() => Location, (location) => location.author)
   publishedLocations: Location[];
+
+  @BeforeInsert()
+  @BeforeUpdate()
+  async parseRoles() {
+    this.roles = this.roles.map((role) => role.toString()) as Role[];
+  }
 }

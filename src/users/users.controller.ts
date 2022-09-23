@@ -9,8 +9,8 @@ export class UsersController {
 
   @Public()
   @Post('register')
-  async register(@Body() userCreateDto: UserCreateDto) {
-    return this.userService.register(userCreateDto);
+  async register(@Body() createUserDto: UserCreateDto) {
+    return this.userService.register(createUserDto);
   }
 
   @Get('my-profile')

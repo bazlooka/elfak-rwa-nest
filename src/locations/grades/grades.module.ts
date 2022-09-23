@@ -8,5 +8,6 @@ import { Grade } from './models/grade.model';
   imports: [TypeOrmModule.forFeature([Grade])],
   providers: [GradesService],
   controllers: [GradesController],
+  exports: [],
 })
 export class GradesModule {}

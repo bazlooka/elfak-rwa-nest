@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { UserCreateDto } from './models/user.create.dto';
 import { User } from './models/user.model';
 import * as bcrypt from 'bcrypt';
+import { Role } from './enums/role.enum';
 
 @Injectable()
 export class UsersService {
@@ -32,9 +33,15 @@ export class UsersService {
       password: hashedPassword,
     });
 
+    user.roles = [Role.Viewer];
+
     const userInDb = await this.userRepository.save(user);
-    userInDb.password = undefined; //Todo proper masking
-    return userInDb;
+    return {
+      ...userInDb,
+      parseRoles: undefined,
+      password: undefined,
+      deletedDate: undefined,
+    };
   }
 
   async getByUsername(username: string) {

@@ -19,8 +19,8 @@ export class Location {
   @Column('varchar', { length: 32 })
   name: string;
 
-  @Column('varchar', { length: 512 })
-  descrpition: string;
+  @Column('varchar', { length: 1024, nullable: true })
+  description: string;
 
   @Column('simple-array')
   imagePaths: string[];
@@ -28,10 +28,10 @@ export class Location {
   @CreateDateColumn()
   publicationTime: Date;
 
-  @Column()
+  @Column('float4')
   latitude: number;
 
-  @Column()
+  @Column('float4')
   longitude: number;
 
   @DeleteDateColumn()
@@ -39,6 +39,9 @@ export class Location {
 
   @ManyToOne(() => LocationType, (locationType) => locationType.locations)
   type: LocationType;
+
+  // @Column({ nullable: true })
+  // gradeCount: number;
 
   @OneToMany(() => Grade, (grade) => grade.location)
   grades: Grade[];
