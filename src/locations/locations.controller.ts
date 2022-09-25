@@ -6,12 +6,19 @@ import {
   Body,
   Request,
   Get,
+  UploadedFile,
+  Put,
+  Param,
+  ParseIntPipe,
 } from '@nestjs/common';
-import { FilesInterceptor } from '@nestjs/platform-express';
+import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { multerConfig } from '../../multer.config';
 import { Public } from '../auth/decorators/public-endpoint.decorator';
+import { Roles } from '../auth/decorators/roles.decorator';
+import { Role } from '../users/enums/role.enum';
 import { LocationsService } from './locations.service';
 import { LocationTypeCreateDto } from './models/location-type.create.dto';
+import { LocationTypeUpdateDto } from './models/location-type.update.dto';
 
 @Controller('locations')
 export class LocationsController {
@@ -29,14 +36,8 @@ export class LocationsController {
     return this.locationsService.getAll();
   }
 
-  // @Public()
-  // @Get()
-  // getTrendingLocations() {
-  //   return this.locationsService.getTrending();
-  // }
-
   @Post()
-  //@Roles(Role.Editor)
+  @Roles(Role.Editor)
   @UseInterceptors(FilesInterceptor('images', 5, multerConfig))
   createLocation(
     @UploadedFiles()
@@ -47,9 +48,32 @@ export class LocationsController {
     return this.locationsService.create(body.dto, images, request.user);
   }
 
-  @Public()
+  @Get('types')
+  @Roles(Role.Editor)
+  getAllLocationTypes() {
+    return this.locationsService.getAllLocationTypes();
+  }
+
   @Post('types')
-  createLocationType(@Body() dto: LocationTypeCreateDto) {
-    return this.locationsService.createLocationType(dto);
+  @Roles(Role.Admin)
+  @UseInterceptors(FileInterceptor('image', multerConfig))
+  createLocationType(
+    @Body() dto: LocationTypeCreateDto,
+    @UploadedFile()
+    image: Express.Multer.File,
+  ) {
+    return this.locationsService.createLocationType(dto, image);
+  }
+
+  @Put('types/:id')
+  @Roles(Role.Admin)
+  @UseInterceptors(FileInterceptor('image', multerConfig))
+  editeLocationType(
+    @Body() dto: LocationTypeUpdateDto,
+    @Param('id', ParseIntPipe) id: number,
+    @UploadedFile()
+    image?: Express.Multer.File,
+  ) {
+    return this.locationsService.updateLocationType(id, dto, image);
   }
 }

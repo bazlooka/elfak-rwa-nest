@@ -10,10 +10,10 @@ import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
 import { RolesGuard } from './auth/guards/roles.guard';
 import { UsersModule } from './users/users.module';
 import { LocationsModule } from './locations/locations.module';
-import { EventsModule } from './events/events.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { MulterModule } from '@nestjs/platform-express';
+import { SettingsModule } from './settings/settings.module';
 
 @Module({
   imports: [
@@ -27,7 +27,7 @@ import { MulterModule } from '@nestjs/platform-express';
     AuthModule,
     UsersModule,
     LocationsModule,
-    EventsModule,
+    SettingsModule,
   ],
   controllers: [AppController],
   providers: [

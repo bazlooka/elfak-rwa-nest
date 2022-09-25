@@ -3,14 +3,12 @@ import {
   Column,
   PrimaryGeneratedColumn,
   OneToMany,
-  ManyToMany,
   DeleteDateColumn,
   BeforeInsert,
   BeforeUpdate,
 } from 'typeorm';
 import { Grade } from '../../locations/grades/models/grade.model';
 import { Role } from '../enums/role.enum';
-import { Event } from '../../events/models/event.model';
 import { Location } from '../../locations/models/location.model';
 
 @Entity()
@@ -33,14 +31,14 @@ export class User {
   @Column('simple-array', { default: [Role.Viewer] })
   roles: Role[];
 
+  @Column('boolean', { default: false })
+  isBanned: boolean;
+
   @DeleteDateColumn()
   deletedDate: Date;
 
   @OneToMany(() => Grade, (grade) => grade.gradedBy)
-  grades: Grade;
-
-  @ManyToMany(() => Event, (event) => event.likedBy)
-  likedEvents: Event;
+  grades: Grade[];
 
   @OneToMany(() => Location, (location) => location.author)
   publishedLocations: Location[];

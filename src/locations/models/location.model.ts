@@ -40,9 +40,6 @@ export class Location {
   @ManyToOne(() => LocationType, (locationType) => locationType.locations)
   type: LocationType;
 
-  // @Column({ nullable: true })
-  // gradeCount: number;
-
   @OneToMany(() => Grade, (grade) => grade.location)
   grades: Grade[];
 
