@@ -5,6 +5,8 @@ import { UserCreateDto } from './models/user.create.dto';
 import { User } from './models/user.model';
 import * as bcrypt from 'bcrypt';
 import { Role } from './enums/role.enum';
+import { UserUpdateDto } from './models/user.update.dto';
+import { AdminUserDto } from './models/admin-user-dto';
 
 @Injectable()
 export class UsersService {
@@ -50,5 +52,40 @@ export class UsersService {
 
   async getById(id: number) {
     return await this.userRepository.findOneBy({ id });
+  }
+
+  async search(query = ''): Promise<AdminUserDto[]> {
+    const formattedQuery = `%${query.split(' ').join('|')}%`;
+
+    const users = await this.userRepository
+      .createQueryBuilder('user')
+      .leftJoin('user.grades', 'grades')
+      .leftJoin('user.publishedLocations', 'locations')
+      .where(
+        'lower(user.firstName) similar to :q or lower(user.lastName)' +
+          'similar to :q or lower(user.username) similar to :q',
+        {
+          q: formattedQuery,
+        },
+      )
+      .select('user.id', 'id')
+      .addSelect('user.firstName', 'firstName')
+      .addSelect('user.lastName', 'lastName')
+      .addSelect('user.username', 'username')
+      .addSelect('user.roles', 'roles')
+      .addSelect('user.isBanned', 'isBanned')
+      .addSelect('COUNT(DISTINCT(locations.id))', 'locationCount')
+      .addSelect('COUNT(DISTINCT(grades.id))', 'gradeCount')
+      .groupBy('user.id')
+      .getRawMany();
+
+    return users.map((user) => {
+      return { ...user, roles: user.roles.split(',') };
+    });
+  }
+
+  async updateUser(userId: number, dto: UserUpdateDto) {
+    await this.userRepository.update(userId, dto);
+    return { ...dto, id: userId };
   }
 }

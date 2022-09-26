@@ -13,10 +13,11 @@ export class AuthService {
 
   async validateUser(username: string, pass: string): Promise<any> {
     const user = await this.usersService.getByUsername(username);
-    if (user && (await compare(pass, user.password))) {
-      return { ...user, password: undefined };
+    if (!user || !(await compare(pass, user.password)) || user.isBanned) {
+      return null;
     }
-    return null;
+
+    return { ...user, password: undefined };
   }
 
   async login(user: User) {
