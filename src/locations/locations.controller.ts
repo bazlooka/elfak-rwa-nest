@@ -19,6 +19,7 @@ import { Role } from '../users/enums/role.enum';
 import { LocationsService } from './locations.service';
 import { LocationTypeCreateDto } from './models/location-type.create.dto';
 import { LocationTypeUpdateDto } from './models/location-type.update.dto';
+import { LocationCreateDto } from './models/location.create.dto';
 
 @Controller('locations')
 export class LocationsController {
@@ -42,10 +43,10 @@ export class LocationsController {
   createLocation(
     @UploadedFiles()
     images: Array<Express.Multer.File>,
-    @Body() body,
+    @Body() dto: LocationCreateDto,
     @Request() request,
   ) {
-    return this.locationsService.create(body.dto, images, request.user);
+    return this.locationsService.create(dto, images, request.user);
   }
 
   @Get('types')

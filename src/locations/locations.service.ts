@@ -98,16 +98,25 @@ export class LocationsService {
   }
 
   public async create(
-    jsonDto: string,
+    dto: LocationCreateDto,
     images: Array<Express.Multer.File>,
     user: User,
   ) {
-    const dto = (await JSON.parse(jsonDto)) as LocationCreateDto;
-
     const location = this.locationRepository.create(dto);
-    location.imagePaths = images.map((image) => {
-      return image.path;
+
+    location.type = await this.locationTypeRepository.findOneBy({
+      id: dto.typeId,
     });
+
+    console.log('IMAGES', images);
+    console.log('DTO', dto);
+
+    if (images) {
+      location.imagePaths = images.map((image) => {
+        return '/' + image.filename;
+      });
+    }
+
     location.author = user;
 
     return await this.locationRepository.save(location);

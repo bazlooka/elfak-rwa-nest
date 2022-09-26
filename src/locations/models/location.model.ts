@@ -34,6 +34,12 @@ export class Location {
   @Column('float4')
   longitude: number;
 
+  @Column('varchar', { length: 128, nullable: true })
+  address: string;
+
+  @Column('varchar', { length: 128, nullable: true })
+  website: string;
+
   @DeleteDateColumn()
   deletedDate: Date;
 
