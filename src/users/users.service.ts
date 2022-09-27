@@ -88,4 +88,8 @@ export class UsersService {
     await this.userRepository.update(userId, dto);
     return { ...dto, id: userId };
   }
+
+  async delete(userId: number) {
+    return this.userRepository.softDelete(userId);
+  }
 }

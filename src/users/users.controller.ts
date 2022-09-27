@@ -8,6 +8,7 @@ import {
   Patch,
   Param,
   ParseIntPipe,
+  Delete,
 } from '@nestjs/common';
 import { Public } from '../auth/decorators/public-endpoint.decorator';
 import { Roles } from '../auth/decorators/roles.decorator';
@@ -44,5 +45,10 @@ export class UsersController {
     @Body() dto: UserUpdateDto,
   ) {
     return this.userService.updateUser(id, dto);
+  }
+
+  @Delete('my-accont')
+  async deleteAccount(@Request() req) {
+    return this.userService.delete(req.user.id);
   }
 }

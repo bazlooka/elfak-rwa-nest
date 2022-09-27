@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { SettingKey } from '../settings/settings.keys';
 import { SettingsService } from '../settings/settings.service';
 import { User } from '../users/models/user.model';
+import { GradesService } from './grades/grades.service';
 import { AdminLocationTypeDto } from './models/admin-location-type.dto';
 import { HomepageDto } from './models/homepage.dto';
 import { LocationPin } from './models/location-pin.dto';
@@ -23,9 +24,10 @@ export class LocationsService {
     @InjectRepository(LocationType)
     private readonly locationTypeRepository: Repository<LocationType>,
     private readonly settingsService: SettingsService,
+    private readonly gradeService: GradesService,
   ) {}
 
-  public async getHomepage(): Promise<HomepageDto> {
+  public async getHomepage(userId?: number): Promise<HomepageDto> {
     const mapLatitude = Number(
       await this.settingsService.getValue(SettingKey.MAP_CENTER_LAT),
     );
@@ -37,7 +39,7 @@ export class LocationsService {
     );
 
     const locationPins = await this.getLocationPins();
-    const trendingLocations = await this.getTrending();
+    const trendingLocations = await this.getTrending(userId);
 
     return {
       map: {
@@ -77,8 +79,15 @@ export class LocationsService {
     return this.locationRepository.find();
   }
 
-  private async getTrending(): Promise<TrendingLocationDto[]> {
-    return await this.locationRepository
+  public get(id: number) {
+    return this.locationRepository.findOne({
+      where: { id },
+      relations: { grades: { gradedBy: true }, type: true },
+    });
+  }
+
+  private async getTrending(userId?: number): Promise<TrendingLocationDto[]> {
+    const locs = await this.locationRepository
       .createQueryBuilder('location')
       .leftJoin('location.type', 'type')
       .leftJoin('location.grades', 'grades')
@@ -95,6 +104,14 @@ export class LocationsService {
       .addGroupBy('type.id')
       .limit(10)
       .getRawMany<TrendingLocationDto>();
+
+    if (userId) {
+      for (const loc of locs) {
+        loc.myGrade = await this.gradeService.getUserGrade(loc.id, userId);
+      }
+    }
+
+    return locs;
   }
 
   public async create(
@@ -107,9 +124,6 @@ export class LocationsService {
     location.type = await this.locationTypeRepository.findOneBy({
       id: dto.typeId,
     });
-
-    console.log('IMAGES', images);
-    console.log('DTO', dto);
 
     if (images) {
       location.imagePaths = images.map((image) => {

@@ -10,6 +10,7 @@ import {
   Put,
   Param,
   ParseIntPipe,
+  Query,
 } from '@nestjs/common';
 import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { multerConfig } from '../../multer.config';
@@ -27,26 +28,8 @@ export class LocationsController {
 
   @Public()
   @Get('homepage')
-  getHomepage() {
-    return this.locationsService.getHomepage();
-  }
-
-  @Public()
-  @Get()
-  getAllLocations() {
-    return this.locationsService.getAll();
-  }
-
-  @Post()
-  @Roles(Role.Editor)
-  @UseInterceptors(FilesInterceptor('images', 5, multerConfig))
-  createLocation(
-    @UploadedFiles()
-    images: Array<Express.Multer.File>,
-    @Body() dto: LocationCreateDto,
-    @Request() request,
-  ) {
-    return this.locationsService.create(dto, images, request.user);
+  getHomepage(@Query('userId') userId?: number) {
+    return this.locationsService.getHomepage(userId);
   }
 
   @Get('types')
@@ -76,5 +59,29 @@ export class LocationsController {
     image?: Express.Multer.File,
   ) {
     return this.locationsService.updateLocationType(id, dto, image);
+  }
+
+  @Public()
+  @Get()
+  getAllLocations() {
+    return this.locationsService.getAll();
+  }
+
+  @Public()
+  @Get(':id')
+  getLocation(@Param('id', ParseIntPipe) id: number) {
+    return this.locationsService.get(id);
+  }
+
+  @Post()
+  @Roles(Role.Editor)
+  @UseInterceptors(FilesInterceptor('images', 5, multerConfig))
+  createLocation(
+    @UploadedFiles()
+    images: Array<Express.Multer.File>,
+    @Body() dto: LocationCreateDto,
+    @Request() request,
+  ) {
+    return this.locationsService.create(dto, images, request.user);
   }
 }

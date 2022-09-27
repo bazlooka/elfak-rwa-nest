@@ -1,3 +1,5 @@
+import { Grade } from '../grades/models/grade.model';
+
 export class TrendingLocationDto {
   id: number;
   name: string;
@@ -7,4 +9,5 @@ export class TrendingLocationDto {
   gradecount: number;
   averageGrade: number;
   typeName: string;
+  myGrade?: Grade | any;
 }
